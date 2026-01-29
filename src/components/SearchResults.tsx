@@ -1,4 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { usePageLanguage } from '../contexts/PageLanguageContext';
+import { getTranslation } from '../utils/translations';
 
 type Language = 'en' | 'es' | 'pt' | 'fr' | 'zh';
 type SearchMode = 'semantic' | 'lemma' | 'literal';
@@ -11,7 +13,10 @@ interface SearchResultsProps {
 }
 
 export function SearchResults({ query, language, mode, onSelectResult }: SearchResultsProps) {
+  const { pageLanguage } = usePageLanguage();
+  
   // Mock results data - will come from database
+  // This data is in the SEARCH LANGUAGE and should NOT change with page language
   const results = [
     {
       id: '1',
@@ -79,38 +84,46 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
     },
   ];
 
-  const languageNames: { [key: string]: string } = {
-    'en': 'English',
-    'es': 'Spanish',
-    'pt': 'Portuguese',
-    'fr': 'French',
-    'zh': 'Mandarin Chinese',
+  // Get language name based on PAGE language (UI translation)
+  const getLanguageName = (langCode: Language) => {
+    const langMap: { [key in Language]: keyof typeof import('../utils/translations').translations } = {
+      'en': 'english',
+      'es': 'spanish',
+      'pt': 'portuguese',
+      'fr': 'french',
+      'zh': 'mandarinChinese',
+    };
+    return getTranslation(langMap[langCode], pageLanguage);
   };
 
-  const modeNames: { [key: string]: string } = {
-    'semantic': 'Semantic Search',
-    'lemma': 'Lemma-based Search',
-    'literal': 'Literal/Example Search',
+  // Get mode name based on PAGE language (UI translation)
+  const getModeName = (searchMode: SearchMode) => {
+    const modeMap: { [key in SearchMode]: keyof typeof import('../utils/translations').translations } = {
+      'semantic': 'semanticSearch',
+      'lemma': 'lemmaSearch',
+      'literal': 'literalSearch',
+    };
+    return getTranslation(modeMap[searchMode], pageLanguage);
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Search Info */}
       <div className="space-y-2">
-        <h2 className="text-3xl font-semibold text-gray-900">Search Results</h2>
+        <h2 className="text-3xl font-semibold text-gray-900">{getTranslation('searchResults', pageLanguage)}</h2>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
           <p>
-            <span className="font-medium">Query:</span> "{query}"
+            <span className="font-medium">{getTranslation('query', pageLanguage)}:</span> "{query}"
           </p>
           <p>
-            <span className="font-medium">Language:</span> {languageNames[language]}
+            <span className="font-medium">{getTranslation('language', pageLanguage)}:</span> {getLanguageName(language)}
           </p>
           <p>
-            <span className="font-medium">Mode:</span> {modeNames[mode]}
+            <span className="font-medium">{getTranslation('mode', pageLanguage)}:</span> {getModeName(mode)}
           </p>
         </div>
         <p className="text-sm text-gray-500">
-          Found {results.length} collocations
+          {getTranslation('foundCollocations', pageLanguage)} {results.length} {getTranslation('collocations', pageLanguage)}
         </p>
       </div>
 

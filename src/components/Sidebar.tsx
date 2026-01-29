@@ -1,4 +1,6 @@
 import { X } from 'lucide-react';
+import { usePageLanguage } from '../contexts/PageLanguageContext';
+import { getTranslation } from '../utils/translations';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -6,6 +8,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { pageLanguage } = usePageLanguage();
+  
   return (
     <>
       {/* Overlay */}
@@ -25,7 +29,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Menu</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{getTranslation('menu', pageLanguage)}</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -40,26 +44,26 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               {/* About Section */}
               <div>
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 px-4">
-                  About
+                  {getTranslation('about', pageLanguage)}
                 </h3>
                 <div className="space-y-1">
                   <a
                     href="/about"
                     className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    About the Project
+                    {getTranslation('aboutTheProject', pageLanguage)}
                   </a>
                   <a
                     href="/publications"
                     className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    Publications
+                    {getTranslation('publications', pageLanguage)}
                   </a>
                   <a
                     href="/related-platforms"
                     className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    Related Platforms
+                    {getTranslation('relatedPlatforms', pageLanguage)}
                   </a>
                 </div>
               </div>
@@ -67,26 +71,26 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               {/* Help & Resources Section */}
               <div>
                 <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 px-4">
-                  Help & Resources
+                  {getTranslation('helpResources', pageLanguage)}
                 </h3>
                 <div className="space-y-1">
                   <a
                     href="/user-guide"
                     className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    User Guide
+                    {getTranslation('userGuide', pageLanguage)}
                   </a>
                   <a
                     href="/faq"
                     className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    FAQ
+                    {getTranslation('faq', pageLanguage)}
                   </a>
                   <a
                     href="/contact"
                     className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    Contact & Feedback
+                    {getTranslation('contactFeedback', pageLanguage)}
                   </a>
                 </div>
               </div>

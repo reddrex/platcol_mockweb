@@ -1,6 +1,8 @@
 import { Search, ChevronDown, Menu } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import logoImage from 'figma:asset/296550738ed3656c15b8bcf027e1c7d116a7278e.png';
+import { usePageLanguage } from '../contexts/PageLanguageContext';
+import { getTranslation } from '../utils/translations';
 
 type SearchMode = 'semantic' | 'lemma' | 'example';
 export type Language = 'en' | 'es' | 'pt' | 'fr' | 'zh';
@@ -10,9 +12,11 @@ interface HeaderProps {
   selectedLanguage: Language;
   onLanguageChange: (language: Language) => void;
   onLogoClick?: () => void;
+  showSearchBar?: boolean;
 }
 
-export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLogoClick }: HeaderProps) {
+export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLogoClick, showSearchBar = true }: HeaderProps) {
+  const { pageLanguage } = usePageLanguage();
   const [searchMode, setSearchMode] = useState<SearchMode>('lemma');
   const [showModeDropdown, setShowModeDropdown] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -33,17 +37,29 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
   };
 
   const searchModes = [
-    { id: 'lemma' as SearchMode, label: 'Lemma-based', description: 'Search by word or collocation structure' },
-    { id: 'semantic' as SearchMode, label: 'Semantic', description: 'Search within definitions' },
-    { id: 'example' as SearchMode, label: 'Example-based', description: 'Search within usage examples' },
+    { 
+      id: 'lemma' as SearchMode, 
+      label: getTranslation('lemmaBasedSearch', pageLanguage), 
+      description: getTranslation('searchByWordDescription', pageLanguage) 
+    },
+    { 
+      id: 'semantic' as SearchMode, 
+      label: getTranslation('semanticSearchShort', pageLanguage), 
+      description: getTranslation('searchWithinDefinitionsDescription', pageLanguage) 
+    },
+    { 
+      id: 'example' as SearchMode, 
+      label: getTranslation('exampleBasedSearch', pageLanguage), 
+      description: getTranslation('searchWithinExamplesDescription', pageLanguage) 
+    },
   ];
 
   const languages = [
-    { id: 'en' as Language, label: 'English', flag: '🇬🇧' },
-    { id: 'es' as Language, label: 'Spanish', flag: '🇪🇸' },
-    { id: 'pt' as Language, label: 'Portuguese', flag: '🇵🇹' },
-    { id: 'fr' as Language, label: 'French', flag: '🇫🇷' },
-    { id: 'zh' as Language, label: 'Mandarin Chinese', flag: '🇨🇳' },
+    { id: 'en' as Language, label: getTranslation('english', pageLanguage), flag: '🇬🇧' },
+    { id: 'es' as Language, label: getTranslation('spanish', pageLanguage), flag: '🇪🇸' },
+    { id: 'pt' as Language, label: getTranslation('portuguese', pageLanguage), flag: '🇵🇹' },
+    { id: 'fr' as Language, label: getTranslation('french', pageLanguage), flag: '🇫🇷' },
+    { id: 'zh' as Language, label: getTranslation('mandarinChinese', pageLanguage), flag: '🇨🇳' },
   ];
 
   const currentMode = searchModes.find(mode => mode.id === searchMode);
@@ -62,13 +78,23 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
         <div className="flex items-center justify-between gap-8">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity" onClick={onLogoClick}>
+            <button 
+              onClick={onLogoClick} 
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              aria-label="Go to home page"
+            >
               <img src={logoImage} alt="PLATCOL" className="h-20 w-auto" />
-            </a>
+            </button>
           </div>
 
           {/* Centered Search Bar Container */}
-          <div className="flex-1 flex justify-center">
+          <div 
+            className={`flex-1 flex justify-center transition-all duration-300 ease-in-out overflow-hidden ${
+              showSearchBar 
+                ? 'opacity-100 max-w-full' 
+                : 'opacity-0 max-w-0 pointer-events-none'
+            }`}
+          >
             <div className="w-full max-w-3xl">
               <div className="relative flex gap-2">
                 {/* Language Selector */}
@@ -149,10 +175,10 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
                     type="text"
                     placeholder={
                       searchMode === 'lemma' 
-                        ? "Search by word, base, or collocate..." 
+                        ? getTranslation('searchByWord', pageLanguage)
                         : searchMode === 'semantic'
-                        ? "Search within definitions..."
-                        : "Search within usage examples..."
+                        ? getTranslation('searchWithinDefinitions', pageLanguage)
+                        : getTranslation('searchWithinExamples', pageLanguage)
                     }
                     className="w-full pl-12 pr-4 py-3 border border-blue-800/30 rounded-lg bg-white/95 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent focus:bg-white transition-all min-h-[44px]"
                   />

@@ -5,6 +5,7 @@ import { HomePage } from './components/HomePage';
 import { SearchResults } from './components/SearchResults';
 import { DictionaryEntry } from './components/DictionaryEntry';
 import { Sidebar } from './components/Sidebar';
+import { PageLanguageProvider } from './contexts/PageLanguageContext';
 
 type SearchMode = 'semantic' | 'lemma' | 'literal';
 type Page = 'home' | 'results' | 'entry';
@@ -33,44 +34,52 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header - Always visible on all pages */}
-      <Header 
-        onMenuToggle={() => setSidebarOpen(true)} 
-        selectedLanguage={selectedLanguage}
-        onLanguageChange={setSelectedLanguage}
-        onLogoClick={handleLogoClick}
-      />
-
-      {/* Main Content */}
-      <main className="flex-1">
-        {currentPage === 'home' && (
-          <HomePage onSearch={handleSearch} />
+    <PageLanguageProvider>
+      <div className="min-h-screen bg-white flex flex-col">
+        {/* Header - Visible only on results and entry pages */}
+        {currentPage !== 'home' && (
+          <Header 
+            onMenuToggle={() => setSidebarOpen(true)} 
+            selectedLanguage={selectedLanguage}
+            onLanguageChange={setSelectedLanguage}
+            onLogoClick={handleLogoClick}
+            showSearchBar={true}
+          />
         )}
-        
-        {currentPage === 'results' && (
-          <div className="container mx-auto px-4 py-12">
-            <SearchResults
-              query={searchQuery}
-              language={searchLanguage}
-              mode={searchMode}
-              onSelectResult={handleSelectResult}
+
+        {/* Main Content */}
+        <main className="flex-1">
+          {currentPage === 'home' && (
+            <HomePage 
+              onSearch={handleSearch}
+              onMenuToggle={() => setSidebarOpen(true)}
             />
-          </div>
-        )}
-        
-        {currentPage === 'entry' && (
-          <div className="container mx-auto px-4 py-12">
-            <DictionaryEntry />
-          </div>
-        )}
-      </main>
+          )}
+          
+          {currentPage === 'results' && (
+            <div className="container mx-auto px-4 py-12">
+              <SearchResults
+                query={searchQuery}
+                language={searchLanguage}
+                mode={searchMode}
+                onSelectResult={handleSelectResult}
+              />
+            </div>
+          )}
+          
+          {currentPage === 'entry' && (
+            <div className="container mx-auto px-4 py-12">
+              <DictionaryEntry />
+            </div>
+          )}
+        </main>
 
-      {/* Footer - Always visible on all pages */}
-      <Footer />
+        {/* Footer - Always visible on all pages */}
+        <Footer />
 
-      {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-    </div>
+        {/* Sidebar */}
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      </div>
+    </PageLanguageProvider>
   );
 }
