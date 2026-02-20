@@ -5,10 +5,18 @@ import { HomePage } from './components/HomePage';
 import { SearchResults } from './components/SearchResults';
 import { DictionaryEntry } from './components/DictionaryEntry';
 import { Sidebar } from './components/Sidebar';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsOfService } from './components/TermsOfService';
+import { CookiePolicy } from './components/CookiePolicy';
+import { AboutProject } from './components/AboutProject';
+import { Publications } from './components/Publications';
+import { RelatedPlatforms } from './components/RelatedPlatforms';
+import { UserGuide } from './components/UserGuide';
+import { FAQ } from './components/FAQ';
 import { PageLanguageProvider } from './contexts/PageLanguageContext';
 
 type SearchMode = 'semantic' | 'lemma' | 'literal';
-type Page = 'home' | 'results' | 'entry';
+type Page = 'home' | 'results' | 'entry' | 'privacy' | 'terms' | 'cookies' | 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -16,7 +24,7 @@ export default function App() {
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchLanguage, setSearchLanguage] = useState<Language>('en');
-  const [searchMode, setSearchMode] = useState<SearchMode>('semantic');
+  const [searchMode, setSearchMode] = useState<SearchMode>('lemma');
 
   const handleSearch = (query: string, language: Language, mode: SearchMode) => {
     setSearchQuery(query);
@@ -33,6 +41,12 @@ export default function App() {
     setCurrentPage('home');
   };
 
+  // Handle navigation from footer links
+  const handleNavigate = (page: Page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <PageLanguageProvider>
       <div className="min-h-screen bg-white flex flex-col">
@@ -43,7 +57,7 @@ export default function App() {
             selectedLanguage={selectedLanguage}
             onLanguageChange={setSelectedLanguage}
             onLogoClick={handleLogoClick}
-            showSearchBar={true}
+            showSearchBar={currentPage === 'results' || currentPage === 'entry'}
           />
         )}
 
@@ -72,13 +86,26 @@ export default function App() {
               <DictionaryEntry />
             </div>
           )}
+
+          {currentPage === 'privacy' && <PrivacyPolicy />}
+          {currentPage === 'terms' && <TermsOfService />}
+          {currentPage === 'cookies' && <CookiePolicy />}
+          {currentPage === 'about' && <AboutProject />}
+          {currentPage === 'publications' && <Publications />}
+          {currentPage === 'related-platforms' && <RelatedPlatforms />}
+          {currentPage === 'user-guide' && <UserGuide />}
+          {currentPage === 'faq' && <FAQ />}
         </main>
 
         {/* Footer - Always visible on all pages */}
-        <Footer />
+        <Footer onNavigate={handleNavigate} />
 
         {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar 
+          isOpen={sidebarOpen} 
+          onClose={() => setSidebarOpen(false)}
+          onNavigate={handleNavigate}
+        />
       </div>
     </PageLanguageProvider>
   );

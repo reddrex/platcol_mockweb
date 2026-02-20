@@ -107,76 +107,74 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Search Info */}
-      <div className="space-y-2">
-        <h2 className="text-3xl font-semibold text-gray-900">{getTranslation('searchResults', pageLanguage)}</h2>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-          <p>
-            <span className="font-medium">{getTranslation('query', pageLanguage)}:</span> "{query}"
-          </p>
-          <p>
-            <span className="font-medium">{getTranslation('language', pageLanguage)}:</span> {getLanguageName(language)}
-          </p>
-          <p>
-            <span className="font-medium">{getTranslation('mode', pageLanguage)}:</span> {getModeName(mode)}
-          </p>
-        </div>
-        <p className="text-sm text-gray-500">
-          {getTranslation('foundCollocations', pageLanguage)} {results.length} {getTranslation('collocations', pageLanguage)}
+    <div className="space-y-6 px-4 sm:px-6">
+      {/* Results header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
+        <p className="text-gray-600 text-sm sm:text-base text-center sm:text-left">
+          {getTranslation('searchResults', pageLanguage).replace('{count}', results.length.toString()).replace('{query}', query)}
         </p>
       </div>
 
-      {/* Results List */}
+      {/* Results list */}
       <div className="space-y-4">
         {results.map((result) => (
-          <button
+          <div
             key={result.id}
             onClick={() => onSelectResult(result.id)}
-            className="w-full bg-white border border-gray-200 rounded-lg p-6 hover:border-blue-900 hover:shadow-md transition-all text-left group"
+            className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-md transition-all cursor-pointer"
           >
             <div className="space-y-3">
-              {/* Collocation Title & Tags */}
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="text-2xl text-gray-900 group-hover:text-blue-900 transition-colors">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <h3 className="text-xl sm:text-2xl font-medium text-gray-900">
                   {result.collocation}
                 </h3>
-                <div className="flex gap-2 flex-shrink-0">
-                  <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-2.5 sm:px-3 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-md whitespace-nowrap">
                     {result.structure}
                   </span>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded font-medium">
+                  <span className="px-2.5 sm:px-3 py-1 bg-blue-100 text-blue-700 text-xs sm:text-sm rounded-md font-medium whitespace-nowrap">
                     {result.level}
                   </span>
                 </div>
               </div>
-
-              {/* Domain */}
-              <div className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm rounded-md">
-                {result.domain}
-              </div>
-
-              {/* Definition */}
-              <p className="text-gray-600 leading-relaxed">
+              
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 {result.definition}
               </p>
+              
+              <div className="pt-2">
+                <span className="text-xs sm:text-sm text-gray-500">
+                  {result.domain}
+                </span>
+              </div>
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-2 pt-4">
-        <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-          <ChevronLeft className="size-5" />
+      <div className="flex items-center justify-center gap-2 sm:gap-4 pt-8">
+        <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
-        <div className="flex gap-1">
-          <button className="px-3 py-1 bg-blue-900 text-white rounded-lg">1</button>
-          <button className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">2</button>
-          <button className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">3</button>
+        
+        <div className="flex gap-1 sm:gap-2">
+          {[1, 2, 3, 4, 5].map((page) => (
+            <button
+              key={page}
+              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-sm sm:text-base transition-colors ${
+                page === 1
+                  ? 'bg-gray-900 text-white'
+                  : 'border border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
         </div>
-        <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-          <ChevronRight className="size-5" />
+        
+        <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
     </div>

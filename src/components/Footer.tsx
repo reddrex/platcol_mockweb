@@ -2,8 +2,13 @@ import { Mail, Linkedin, Twitter, Facebook, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { usePageLanguage, PageLanguage } from '../contexts/PageLanguageContext';
 import { getTranslation } from '../utils/translations';
+import footerLogo from 'figma:asset/6d8351d53d007fa5fa96bff704b1c4993486e9e4.png';
 
-export function Footer() {
+interface FooterProps {
+  onNavigate: (page: 'privacy' | 'terms' | 'cookies') => void;
+}
+
+export function Footer({ onNavigate }: FooterProps) {
   const { pageLanguage, setPageLanguage } = usePageLanguage();
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
@@ -19,61 +24,52 @@ export function Footer() {
 
   return (
     <footer className="border-t border-blue-800 bg-blue-950 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Quick Links */}
-          <div>
-            <h3 className="font-semibold text-white mb-4">{getTranslation('quickLinks', pageLanguage)}</h3>
-            <ul className="space-y-2">
-              <li>
-                <a href="/about" className="text-sm text-blue-100 hover:text-white transition-colors">
-                  {getTranslation('aboutUs', pageLanguage)}
-                </a>
-              </li>
-              <li>
-                <a href="/blog" className="text-sm text-blue-100 hover:text-white transition-colors">
-                  {getTranslation('blog', pageLanguage)}
-                </a>
-              </li>
-              <li>
-                <a href="/help" className="text-sm text-blue-100 hover:text-white transition-colors">
-                  {getTranslation('helpCenter', pageLanguage)}
-                </a>
-              </li>
-              <li>
-                <a href="/guide" className="text-sm text-blue-100 hover:text-white transition-colors">
-                  {getTranslation('userGuide', pageLanguage)}
-                </a>
-              </li>
-            </ul>
+          {/* PLATCOL Logo */}
+          <div className="flex items-start justify-center md:justify-start">
+            <img 
+              src={footerLogo} 
+              alt="PLATCOL" 
+              className="h-16 sm:h-20 md:h-24 lg:h-28 w-auto md:ml-8 lg:ml-12"
+            />
           </div>
 
           {/* Legal */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold text-white mb-4">{getTranslation('legal', pageLanguage)}</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/privacy" className="text-sm text-blue-100 hover:text-white transition-colors">
+                <button
+                  onClick={() => onNavigate('privacy')}
+                  className="text-sm text-blue-100 hover:text-white transition-colors cursor-pointer"
+                >
                   {getTranslation('privacyPolicy', pageLanguage)}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/terms" className="text-sm text-blue-100 hover:text-white transition-colors">
+                <button
+                  onClick={() => onNavigate('terms')}
+                  className="text-sm text-blue-100 hover:text-white transition-colors cursor-pointer"
+                >
                   {getTranslation('termsOfService', pageLanguage)}
-                </a>
+                </button>
               </li>
               <li>
-                <a href="/cookies" className="text-sm text-blue-100 hover:text-white transition-colors">
+                <button
+                  onClick={() => onNavigate('cookies')}
+                  className="text-sm text-blue-100 hover:text-white transition-colors cursor-pointer"
+                >
                   {getTranslation('cookiePolicy', pageLanguage)}
-                </a>
+                </button>
               </li>
             </ul>
           </div>
 
           {/* Contact & Social */}
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-semibold text-white mb-4">{getTranslation('connect', pageLanguage)}</h3>
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 justify-center md:justify-start">
               <a
                 href="mailto:contact@platcol.com"
                 className="text-blue-100 hover:text-white transition-colors"
@@ -165,7 +161,7 @@ export function Footer() {
             </div>
 
             {/* Copyright */}
-            <p className="text-sm text-blue-200">
+            <p className="text-sm text-blue-200 text-center md:text-right">
               © {new Date().getFullYear()} PLATCOL. {getTranslation('allRightsReserved', pageLanguage)}
             </p>
           </div>

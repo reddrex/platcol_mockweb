@@ -74,16 +74,16 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
 
   return (
     <header className="border-b border-blue-800 bg-blue-950 sticky top-0 z-10">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <button 
               onClick={onLogoClick} 
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               aria-label="Go to home page"
             >
-              <img src={logoImage} alt="PLATCOL" className="h-20 w-auto" />
+              <img src={logoImage} alt="PLATCOL" className="h-12 sm:h-16 lg:h-20 w-auto" />
             </button>
           </div>
 
@@ -96,15 +96,15 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
             }`}
           >
             <div className="w-full max-w-3xl">
-              <div className="relative flex gap-2">
+              <div className="relative flex flex-wrap sm:flex-nowrap gap-2">
                 {/* Language Selector */}
                 <div className="relative">
                   <button
                     onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                    className="h-full px-4 py-3 border border-blue-800/30 rounded-lg bg-white/95 hover:bg-white shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 transition-all min-h-[44px]"
+                    className="h-full px-3 sm:px-4 py-2 sm:py-3 border border-blue-800/30 rounded-lg bg-white/95 hover:bg-white shadow-sm flex items-center gap-1 sm:gap-2 text-sm font-medium text-gray-700 transition-all min-h-[40px] sm:min-h-[44px]"
                   >
-                    <span className="text-lg">{currentLanguage?.flag}</span>
-                    <ChevronDown className="w-5 h-5" />
+                    <span className="text-base sm:text-lg">{currentLanguage?.flag}</span>
+                    <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                   
                   {showLanguageDropdown && (
@@ -135,7 +135,7 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
                 <div className="relative">
                   <button
                     onClick={() => setShowModeDropdown(!showModeDropdown)}
-                    className="h-full px-3 py-3 border border-blue-800/30 rounded-lg bg-white/95 hover:bg-white shadow-sm flex items-center gap-1 text-sm font-medium text-gray-700 transition-all min-h-[44px]"
+                    className="h-full px-2 sm:px-3 py-2 sm:py-3 border border-blue-800/30 rounded-lg bg-white/95 hover:bg-white shadow-sm flex items-center gap-1 text-sm font-medium text-gray-700 transition-all min-h-[40px] sm:min-h-[44px]"
                   >
                     {modeAbbreviations[searchMode]}
                     <ChevronDown className="w-4 h-4" />
@@ -169,8 +169,8 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
                 </div>
 
                 {/* Search Input */}
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <div className="relative flex-1 w-full sm:w-auto">
+                  <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   <input
                     type="text"
                     placeholder={
@@ -180,13 +180,13 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
                         ? getTranslation('searchWithinDefinitions', pageLanguage)
                         : getTranslation('searchWithinExamples', pageLanguage)
                     }
-                    className="w-full pl-12 pr-4 py-3 border border-blue-800/30 rounded-lg bg-white/95 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent focus:bg-white transition-all min-h-[44px]"
+                    className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2 sm:py-3 border border-blue-800/30 rounded-lg bg-white/95 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-transparent focus:bg-white transition-all min-h-[40px] sm:min-h-[44px] text-sm sm:text-base"
                   />
                 </div>
 
                 {/* Search Button */}
-                <button className="px-5 py-3 bg-white/95 text-blue-950 rounded-lg hover:bg-white shadow-sm transition-all flex items-center gap-2 min-h-[44px] font-medium">
-                  <Search className="w-5 h-5" />
+                <button className="px-4 sm:px-5 py-2 sm:py-3 bg-white/95 text-blue-950 rounded-lg hover:bg-white shadow-sm transition-all flex items-center gap-2 min-h-[40px] sm:min-h-[44px] font-medium">
+                  <Search className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
@@ -195,9 +195,9 @@ export function Header({ onMenuToggle, selectedLanguage, onLanguageChange, onLog
           {/* Menu Toggle */}
           <button
             onClick={onMenuToggle}
-            className="h-full px-4 py-3 border border-blue-800/30 rounded-lg bg-white/95 hover:bg-white shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 transition-all min-h-[44px]"
+            className="h-full px-3 sm:px-4 py-2 sm:py-3 border border-blue-800/30 rounded-lg bg-white/95 hover:bg-white shadow-sm flex items-center gap-2 text-sm font-medium text-gray-700 transition-all min-h-[40px] sm:min-h-[44px] flex-shrink-0"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>

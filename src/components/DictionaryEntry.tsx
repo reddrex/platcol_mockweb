@@ -48,33 +48,33 @@ export function DictionaryEntry() {
   };
 
   return (
-    <article className="max-w-3xl mx-auto space-y-6">
+    <article className="max-w-3xl mx-auto space-y-6 px-4 sm:px-6">
       {/* Main Entry Header - Static, doesn't change with tabs */}
       <header className="space-y-4 pb-6 border-b border-gray-200">
-        <h1 className="text-5xl text-gray-900 text-center">make progress</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 text-center">make progress</h1>
         
         {/* Tags */}
-        <div className="flex flex-wrap gap-3 justify-center">
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-md">
+        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+          <span className="px-2.5 sm:px-3 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-md">
             verb + noun
           </span>
-          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-md font-medium">
+          <span className="px-2.5 sm:px-3 py-1 bg-green-100 text-green-800 text-xs sm:text-sm rounded-md font-medium">
             Education & Development
           </span>
-          <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-md font-medium">
+          <span className="px-2.5 sm:px-3 py-1 bg-blue-100 text-blue-700 text-xs sm:text-sm rounded-md font-medium">
             B1
           </span>
         </div>
       </header>
 
       {/* Tabs Navigation */}
-      <nav className="border-b border-gray-200">
-        <div className="flex gap-8 justify-center">
+      <nav className="border-b border-gray-200 -mx-4 sm:mx-0">
+        <div className="flex gap-4 sm:gap-6 md:gap-8 justify-start sm:justify-center overflow-x-auto px-4 sm:px-0 scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-3 text-sm font-medium transition-colors relative ${
+              className={`pb-3 text-xs sm:text-sm font-medium transition-colors relative whitespace-nowrap flex-shrink-0 ${
                 activeTab === tab.id
                   ? 'text-gray-900'
                   : 'text-gray-500 hover:text-gray-700'
@@ -91,7 +91,7 @@ export function DictionaryEntry() {
 
       {/* Tab Content - Only this section changes */}
       <div className="pt-4">
-        <div className="min-h-[500px]">
+        <div className="min-h-[400px] sm:min-h-[500px]">
           {activeTab === 'definition' && <DefinitionTab />}
           {activeTab === 'examples' && <ExamplesTab />}
           {activeTab === 'translations' && <TranslationsTab />}

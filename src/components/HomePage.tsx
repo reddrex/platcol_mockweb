@@ -115,7 +115,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
   const { pageLanguage } = usePageLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
-  const [selectedMode, setSelectedMode] = useState<SearchMode>('semantic');
+  const [selectedMode, setSelectedMode] = useState<SearchMode>('lemma');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
@@ -239,23 +239,23 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
       {onMenuToggle && (
         <button
           onClick={onMenuToggle}
-          className="fixed top-6 right-6 z-50 p-3 bg-blue-900 text-white rounded-lg shadow-lg hover:bg-blue-800 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-400"
+          className="fixed top-4 sm:top-6 right-4 sm:right-6 z-50 p-2.5 sm:p-3 bg-blue-900 text-white rounded-lg shadow-lg hover:bg-blue-800 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-400"
           aria-label="Open menu"
         >
-          <Menu className="size-6" />
+          <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       )}
 
       {/* Hero Section */}
-      <div id="main-content" className="flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-3xl space-y-12">
+      <div id="main-content" className="flex items-center justify-center px-4 py-8 sm:py-12 md:py-16">
+        <div className="w-full max-w-3xl space-y-8 sm:space-y-10 md:space-y-12">
           {/* Title */}
           <div className="text-center">
             <h1 className="sr-only">PLATCOL - Multilingual Collocation Dictionary</h1>
             <img 
               src={logoImage} 
               alt="PLATCOL - Platform for Collocations - Multilingual dictionary containing collocations in Spanish, English, Portuguese, French, and Mandarin Chinese" 
-              className="h-64 w-auto mx-auto"
+              className="h-40 sm:h-52 md:h-64 w-auto mx-auto"
             />
           </div>
 
@@ -263,7 +263,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
           <div className="space-y-3">
             <label 
               id="language-label" 
-              className="block text-base font-semibold text-gray-900 text-center"
+              className="block text-sm sm:text-base font-semibold text-gray-900 text-center"
             >
               {getTranslation('selectLanguage', pageLanguage)}
             </label>
@@ -278,7 +278,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
                   role="radio"
                   aria-checked={selectedLanguage === lang.code}
                   onClick={() => setSelectedLanguage(lang.code)}
-                  className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all focus:outline-none focus:ring-4 focus:ring-blue-400 ${
+                  className={`px-3 sm:px-4 py-2 rounded-lg border text-xs sm:text-sm font-medium transition-all focus:outline-none focus:ring-4 focus:ring-blue-400 ${
                     selectedLanguage === lang.code
                       ? 'bg-blue-900 text-white border-blue-900'
                       : 'bg-white text-gray-900 border-gray-400 hover:border-blue-900 hover:text-blue-900'
@@ -294,7 +294,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
           <div className="space-y-3">
             <label 
               id="search-mode-label" 
-              className="block text-base font-semibold text-gray-900 text-center"
+              className="block text-sm sm:text-base font-semibold text-gray-900 text-center"
             >
               {getTranslation('searchModeLabel', pageLanguage)}
             </label>
@@ -333,14 +333,14 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
               onClick={() => setShowAdvanced(!showAdvanced)}
               aria-expanded={showAdvanced}
               aria-controls="advanced-filters"
-              className="w-full flex items-center justify-center gap-2 text-base font-medium text-gray-900 hover:text-blue-900 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-400 rounded px-4 py-2"
+              className="w-full flex items-center justify-center gap-2 text-sm sm:text-base font-medium text-gray-900 hover:text-blue-900 transition-colors focus:outline-none focus:ring-4 focus:ring-blue-400 rounded px-4 py-2"
             >
               {getTranslation('advancedSearchOptions', pageLanguage)}
-              {showAdvanced ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+              {showAdvanced ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />}
             </button>
 
             {showAdvanced && (
-              <div id="advanced-filters" className="bg-gray-50 border border-gray-300 rounded-lg p-6 space-y-4">
+              <div id="advanced-filters" className="bg-gray-50 border border-gray-300 rounded-lg p-4 sm:p-6 space-y-4">
                 {/* Base Word and Collocate Word */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -353,7 +353,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
                       value={filters.baseWord}
                       onChange={(e) => setFilters({ ...filters, baseWord: e.target.value })}
                       placeholder={getTranslation('baseWordPlaceholder', pageLanguage)}
-                      className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent bg-white"
                     />
                   </div>
                   <div>
@@ -366,7 +366,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
                       value={filters.collocateWord}
                       onChange={(e) => setFilters({ ...filters, collocateWord: e.target.value })}
                       placeholder={getTranslation('collocateWordPlaceholder', pageLanguage)}
-                      className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent bg-white"
                     />
                   </div>
                 </div>
@@ -380,7 +380,13 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
                     id="structure-select"
                     value={filters.structure}
                     onChange={(e) => setFilters({ ...filters, structure: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent bg-white appearance-none cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 0.75rem center',
+                      paddingRight: '2.5rem'
+                    }}
                   >
                     <option value="">{getTranslation('allStructures', pageLanguage)}</option>
                     {structures.map((structure) => (
@@ -400,7 +406,13 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
                     id="domain-select"
                     value={filters.domain}
                     onChange={(e) => setFilters({ ...filters, domain: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent"
+                    className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-400 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-400 focus:border-transparent bg-white appearance-none cursor-pointer"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 0.75rem center',
+                      paddingRight: '2.5rem'
+                    }}
                   >
                     <option value="">{getTranslation('allDomains', pageLanguage)}</option>
                     {domains.map((domain) => (
@@ -415,7 +427,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
                 <button
                   type="button"
                   onClick={() => setFilters({ baseWord: '', collocateWord: '', structure: '', domain: '' })}
-                  className="text-sm text-blue-900 hover:text-blue-700 hover:underline font-semibold focus:outline-none focus:ring-4 focus:ring-blue-400 rounded px-2 py-1"
+                  className="text-xs sm:text-sm text-blue-900 hover:text-blue-700 hover:underline font-semibold focus:outline-none focus:ring-4 focus:ring-blue-400 rounded px-2 py-1"
                 >
                   {getTranslation('clearAllFilters', pageLanguage)}
                 </button>
