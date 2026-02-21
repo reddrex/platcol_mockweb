@@ -132,6 +132,9 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
                   <span className="px-2.5 sm:px-3 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-md whitespace-nowrap">
                     {result.structure}
                   </span>
+                  <span className="px-2.5 sm:px-3 py-1 bg-green-100 text-green-800 text-xs sm:text-sm rounded-md font-medium whitespace-nowrap">
+                    {result.domain}
+                  </span>
                   <span className="px-2.5 sm:px-3 py-1 bg-blue-100 text-blue-700 text-xs sm:text-sm rounded-md font-medium whitespace-nowrap">
                     {result.level}
                   </span>
@@ -141,12 +144,6 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 {result.definition}
               </p>
-              
-              <div className="pt-2">
-                <span className="text-xs sm:text-sm text-gray-500">
-                  {result.domain}
-                </span>
-              </div>
             </div>
           </div>
         ))}

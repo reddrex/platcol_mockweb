@@ -13,10 +13,11 @@ import { Publications } from './components/Publications';
 import { RelatedPlatforms } from './components/RelatedPlatforms';
 import { UserGuide } from './components/UserGuide';
 import { FAQ } from './components/FAQ';
+import { Contact } from './components/Contact';
 import { PageLanguageProvider } from './contexts/PageLanguageContext';
 
 type SearchMode = 'semantic' | 'lemma' | 'literal';
-type Page = 'home' | 'results' | 'entry' | 'privacy' | 'terms' | 'cookies' | 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq';
+type Page = 'home' | 'results' | 'entry' | 'privacy' | 'terms' | 'cookies' | 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq' | 'contact';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -95,6 +96,7 @@ export default function App() {
           {currentPage === 'related-platforms' && <RelatedPlatforms />}
           {currentPage === 'user-guide' && <UserGuide />}
           {currentPage === 'faq' && <FAQ />}
+          {currentPage === 'contact' && <Contact />}
         </main>
 
         {/* Footer - Always visible on all pages */}

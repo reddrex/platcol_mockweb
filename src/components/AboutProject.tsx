@@ -1,5 +1,5 @@
 import { usePageLanguage } from '../contexts/PageLanguageContext';
-import { Users, Globe, Award, DollarSign } from 'lucide-react';
+import { Users, Globe, Award, DollarSign, ExternalLink } from 'lucide-react';
 import fapespLogo from 'figma:asset/afa61a521e17db9e156f521c7aa918522fe6495e.png';
 import capesLogo from 'figma:asset/67f3be79ecb7eaf6849a2650761cd6942c2d40fd.png';
 import unespLogo from 'figma:asset/e50e0c9d9216c20603ac80406a650f9fd25d8af7.png';
@@ -198,29 +198,173 @@ export function AboutProject() {
               <div className="bg-blue-50 border border-blue-900 rounded p-4">
                 <p className="text-xs font-semibold text-blue-900 uppercase tracking-wider mb-2">{text.teamLead}</p>
                 <p className="text-sm font-semibold text-gray-900 mb-1">{text.teamLeadName}</p>
-                <p className="text-xs text-gray-600">{text.teamLeadAffiliation}</p>
+                <p className="text-xs text-gray-600 mb-3">{text.teamLeadAffiliation}</p>
+                
+                {/* Profile Links */}
+                <div className="flex gap-2 flex-wrap">
+                  <a
+                    href="https://orcid.org/0000-0000-0000-0001"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-600 text-green-700 rounded text-xs hover:bg-green-50 transition-colors"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 256 256" fill="currentColor">
+                      <path d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+                      <g fill="white">
+                        <path d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+                        <path d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5 c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+                        <circle cx="78.2" cy="59" r="11"/>
+                      </g>
+                    </svg>
+                    ORCID
+                  </a>
+                  <a
+                    href="https://scholar.google.com/citations?user=EXAMPLE1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-600 text-blue-700 rounded text-xs hover:bg-blue-50 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Google Scholar
+                  </a>
+                </div>
               </div>
               
               {/* Other Researchers */}
               <div className="bg-gray-50 border border-gray-200 rounded p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{text.teamMember}</p>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Researcher Name</p>
-                <p className="text-xs text-gray-600">Institution</p>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Dr. Maria Silva</p>
+                <p className="text-xs text-gray-600 mb-3">University of Granada, Spain</p>
+                
+                <div className="flex gap-2 flex-wrap">
+                  <a
+                    href="https://orcid.org/0000-0000-0000-0002"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-600 text-green-700 rounded text-xs hover:bg-green-50 transition-colors"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 256 256" fill="currentColor">
+                      <path d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+                      <g fill="white">
+                        <path d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+                        <path d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5 c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+                        <circle cx="78.2" cy="59" r="11"/>
+                      </g>
+                    </svg>
+                    ORCID
+                  </a>
+                  <a
+                    href="https://scholar.google.com/citations?user=EXAMPLE2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-600 text-blue-700 rounded text-xs hover:bg-blue-50 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Google Scholar
+                  </a>
+                </div>
               </div>
+
               <div className="bg-gray-50 border border-gray-200 rounded p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{text.teamMember}</p>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Researcher Name</p>
-                <p className="text-xs text-gray-600">Institution</p>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Dr. Jean Dupont</p>
+                <p className="text-xs text-gray-600 mb-3">Université de Montréal, Canada</p>
+                
+                <div className="flex gap-2 flex-wrap">
+                  <a
+                    href="https://orcid.org/0000-0000-0000-0003"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-600 text-green-700 rounded text-xs hover:bg-green-50 transition-colors"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 256 256" fill="currentColor">
+                      <path d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+                      <g fill="white">
+                        <path d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+                        <path d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5 c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+                        <circle cx="78.2" cy="59" r="11"/>
+                      </g>
+                    </svg>
+                    ORCID
+                  </a>
+                  <a
+                    href="https://scholar.google.com/citations?user=EXAMPLE3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-600 text-blue-700 rounded text-xs hover:bg-blue-50 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Google Scholar
+                  </a>
+                </div>
               </div>
+
               <div className="bg-gray-50 border border-gray-200 rounded p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{text.teamFormerMember}</p>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Researcher Name</p>
-                <p className="text-xs text-gray-600">Institution</p>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Dr. John Smith</p>
+                <p className="text-xs text-gray-600 mb-3">Lancaster University, UK</p>
+                
+                <div className="flex gap-2 flex-wrap">
+                  <a
+                    href="https://orcid.org/0000-0000-0000-0004"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-600 text-green-700 rounded text-xs hover:bg-green-50 transition-colors"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 256 256" fill="currentColor">
+                      <path d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+                      <g fill="white">
+                        <path d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+                        <path d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5 c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+                        <circle cx="78.2" cy="59" r="11"/>
+                      </g>
+                    </svg>
+                    ORCID
+                  </a>
+                  <a
+                    href="https://scholar.google.com/citations?user=EXAMPLE4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-600 text-blue-700 rounded text-xs hover:bg-blue-50 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Google Scholar
+                  </a>
+                </div>
               </div>
+
               <div className="bg-gray-50 border border-gray-200 rounded p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{text.teamFormerMember}</p>
-                <p className="text-sm font-semibold text-gray-900 mb-1">Researcher Name</p>
-                <p className="text-xs text-gray-600">Institution</p>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Dr. Ana Costa</p>
+                <p className="text-xs text-gray-600 mb-3">Universidade de Lisboa, Portugal</p>
+                
+                <div className="flex gap-2 flex-wrap">
+                  <a
+                    href="https://orcid.org/0000-0000-0000-0005"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-600 text-green-700 rounded text-xs hover:bg-green-50 transition-colors"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 256 256" fill="currentColor">
+                      <path d="M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z"/>
+                      <g fill="white">
+                        <path d="M86.3,186.2H70.9V79.1h15.4v48.4V186.2z"/>
+                        <path d="M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5 c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z"/>
+                        <circle cx="78.2" cy="59" r="11"/>
+                      </g>
+                    </svg>
+                    ORCID
+                  </a>
+                  <a
+                    href="https://scholar.google.com/citations?user=EXAMPLE5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-600 text-blue-700 rounded text-xs hover:bg-blue-50 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Google Scholar
+                  </a>
+                </div>
               </div>
             </div>
           </div>

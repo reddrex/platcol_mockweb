@@ -5,7 +5,7 @@ import { getTranslation } from '../utils/translations';
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigate?: (page: 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq' | 'privacy' | 'terms' | 'cookies') => void;
+  onNavigate?: (page: 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq' | 'contact' | 'privacy' | 'terms' | 'cookies') => void;
 }
 
 export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
@@ -115,53 +115,16 @@ export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
                   >
                     {getTranslation('faq', pageLanguage)}
                   </button>
-                  <a
-                    href="/contact"
-                    className="block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  <button
+                    onClick={() => {
+                      if (onNavigate) {
+                        onNavigate('contact');
+                        onClose();
+                      }
+                    }}
+                    className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('contactFeedback', pageLanguage)}
-                  </a>
-                </div>
-              </div>
-
-              {/* Legal Section */}
-              <div>
-                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4 px-4">
-                  {getTranslation('legal', pageLanguage)}
-                </h3>
-                <div className="space-y-1">
-                  <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('privacy');
-                        onClose();
-                      }
-                    }}
-                    className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    {getTranslation('privacyPolicy', pageLanguage)}
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('terms');
-                        onClose();
-                      }
-                    }}
-                    className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    {getTranslation('termsOfService', pageLanguage)}
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('cookies');
-                        onClose();
-                      }
-                    }}
-                    className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    {getTranslation('cookiePolicy', pageLanguage)}
                   </button>
                 </div>
               </div>
