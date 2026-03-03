@@ -1,14 +1,11 @@
 import { Mail, Linkedin, Twitter, Facebook, Globe } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { usePageLanguage, PageLanguage } from '../contexts/PageLanguageContext';
 import { getTranslation } from '../utils/translations';
 import footerLogo from 'figma:asset/6d8351d53d007fa5fa96bff704b1c4993486e9e4.png';
 
-interface FooterProps {
-  onNavigate: (page: 'privacy' | 'terms' | 'cookies') => void;
-}
-
-export function Footer({ onNavigate }: FooterProps) {
+export function Footer() {
   const { pageLanguage, setPageLanguage } = usePageLanguage();
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
@@ -28,9 +25,9 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* PLATCOL Logo */}
           <div className="flex items-start justify-center md:justify-start">
-            <img 
-              src={footerLogo} 
-              alt="PLATCOL" 
+            <img
+              src={footerLogo}
+              alt="PLATCOL"
               className="h-16 sm:h-20 md:h-24 lg:h-28 w-auto md:ml-8 lg:ml-12"
             />
           </div>
@@ -40,28 +37,28 @@ export function Footer({ onNavigate }: FooterProps) {
             <h3 className="font-semibold text-white mb-4">{getTranslation('legal', pageLanguage)}</h3>
             <ul className="space-y-2">
               <li>
-                <button
-                  onClick={() => onNavigate('privacy')}
-                  className="text-sm text-blue-100 hover:text-white transition-colors cursor-pointer"
+                <Link
+                  to="/privacy"
+                  className="text-sm text-blue-100 hover:text-white transition-colors"
                 >
                   {getTranslation('privacyPolicy', pageLanguage)}
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('terms')}
-                  className="text-sm text-blue-100 hover:text-white transition-colors cursor-pointer"
+                <Link
+                  to="/terms"
+                  className="text-sm text-blue-100 hover:text-white transition-colors"
                 >
                   {getTranslation('termsOfService', pageLanguage)}
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('cookies')}
-                  className="text-sm text-blue-100 hover:text-white transition-colors cursor-pointer"
+                <Link
+                  to="/cookies"
+                  className="text-sm text-blue-100 hover:text-white transition-colors"
                 >
                   {getTranslation('cookiePolicy', pageLanguage)}
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -131,11 +128,11 @@ export function Footer({ onNavigate }: FooterProps) {
                   <Globe className="w-4 h-4" />
                   {currentLanguage?.nativeLabel}
                 </button>
-                
+
                 {showLanguageDropdown && (
                   <>
-                    <div 
-                      className="fixed inset-0 z-10" 
+                    <div
+                      className="fixed inset-0 z-10"
                       onClick={() => setShowLanguageDropdown(false)}
                     />
                     <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">

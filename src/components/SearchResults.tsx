@@ -1,118 +1,106 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { usePageLanguage } from '../contexts/PageLanguageContext';
 import { getTranslation } from '../utils/translations';
+import { useSearch, PAGE_SIZE } from '../hooks/useSearch';
+import type { Language, SearchMode, SearchFilters } from '../types/collocation';
 
-type Language = 'en' | 'es' | 'pt' | 'fr' | 'zh';
-type SearchMode = 'semantic' | 'lemma' | 'literal';
-
-interface SearchResultsProps {
-  query: string;
-  language: Language;
-  mode: SearchMode;
-  onSelectResult: (collocationId: string) => void;
-}
-
-export function SearchResults({ query, language, mode, onSelectResult }: SearchResultsProps) {
+export function SearchResults() {
   const { pageLanguage } = usePageLanguage();
-  
-  // Mock results data - will come from database
-  // This data is in the SEARCH LANGUAGE and should NOT change with page language
-  const results = [
-    {
-      id: '1',
-      collocation: 'make progress',
-      structure: 'verb + noun',
-      domain: 'Education & Development',
-      level: 'B1',
-      definition: 'To move forward or advance in the development, completion, or improvement of something',
-    },
-    {
-      id: '2',
-      collocation: 'make a decision',
-      structure: 'verb + noun',
-      domain: 'General',
-      level: 'A2',
-      definition: 'To choose or determine something after consideration',
-    },
-    {
-      id: '3',
-      collocation: 'take advantage',
-      structure: 'verb + noun',
-      domain: 'Business & Strategy',
-      level: 'B2',
-      definition: 'To use an opportunity or situation for benefit',
-    },
-    {
-      id: '4',
-      collocation: 'pay attention',
-      structure: 'verb + noun',
-      domain: 'Education & Development',
-      level: 'A2',
-      definition: 'To focus or concentrate on something or someone',
-    },
-    {
-      id: '5',
-      collocation: 'reach a conclusion',
-      structure: 'verb + noun',
-      domain: 'Academic & Research',
-      level: 'B2',
-      definition: 'To arrive at a final judgment or decision after reasoning',
-    },
-    {
-      id: '6',
-      collocation: 'gain experience',
-      structure: 'verb + noun',
-      domain: 'Professional Development',
-      level: 'B1',
-      definition: 'To acquire knowledge or skill through practice or exposure',
-    },
-    {
-      id: '7',
-      collocation: 'express concern',
-      structure: 'verb + noun',
-      domain: 'Communication',
-      level: 'B2',
-      definition: 'To communicate worry or unease about a situation',
-    },
-    {
-      id: '8',
-      collocation: 'conduct research',
-      structure: 'verb + noun',
-      domain: 'Academic & Research',
-      level: 'C1',
-      definition: 'To carry out systematic investigation or study',
-    },
-  ];
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  // Get language name based on PAGE language (UI translation)
+  const query = searchParams.get('q') ?? '';
+  const language = (searchParams.get('lang') ?? 'en') as Language;
+  const mode = (searchParams.get('mode') ?? 'lemma') as SearchMode;
+  const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
+
+  const filters: SearchFilters = {
+    baseWord: searchParams.get('base') ?? undefined,
+    collocateWord: searchParams.get('collocate') ?? undefined,
+    structure: searchParams.get('structure') ?? undefined,
+    domain: searchParams.get('domain') ?? undefined,
+  };
+
+  const { results, totalCount, totalPages, loading, error } = useSearch(query, language, mode, filters, page);
+
+  const goToPage = (p: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', String(p));
+    setSearchParams(params);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const getLanguageName = (langCode: Language) => {
-    const langMap: { [key in Language]: keyof typeof import('../utils/translations').translations } = {
-      'en': 'english',
-      'es': 'spanish',
-      'pt': 'portuguese',
-      'fr': 'french',
-      'zh': 'mandarinChinese',
+    const langMap: Record<Language, keyof typeof import('../utils/translations').translations> = {
+      en: 'english',
+      es: 'spanish',
+      pt: 'portuguese',
+      fr: 'french',
+      zh: 'mandarinChinese',
     };
     return getTranslation(langMap[langCode], pageLanguage);
   };
 
-  // Get mode name based on PAGE language (UI translation)
   const getModeName = (searchMode: SearchMode) => {
-    const modeMap: { [key in SearchMode]: keyof typeof import('../utils/translations').translations } = {
-      'semantic': 'semanticSearch',
-      'lemma': 'lemmaSearch',
-      'literal': 'literalSearch',
+    const modeMap: Record<SearchMode, keyof typeof import('../utils/translations').translations> = {
+      semantic: 'semanticSearch',
+      lemma: 'lemmaSearch',
+      literal: 'literalSearch',
     };
     return getTranslation(modeMap[searchMode], pageLanguage);
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4 text-gray-500">
+        <Loader2 className="w-8 h-8 animate-spin" />
+        <p>{getTranslation('searching', pageLanguage)}</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4 text-center px-4">
+        <p className="text-gray-700 font-medium">{getTranslation('errorLoading', pageLanguage)}</p>
+        <p className="text-gray-500 text-sm">{error}</p>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!loading && results.length === 0 && query) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4 text-center px-4">
+        <p className="text-gray-700 font-medium text-lg">
+          {getTranslation('noResultsFor', pageLanguage)} &ldquo;{query}&rdquo;
+        </p>
+        <p className="text-gray-500 text-sm">
+          {getTranslation('tryDifferentSearch', pageLanguage)}
+        </p>
+      </div>
+    );
+  }
+
+  const firstResult = (page - 1) * PAGE_SIZE + 1;
+  const lastResult = Math.min(page * PAGE_SIZE, totalCount);
 
   return (
     <div className="space-y-6 px-4 sm:px-6">
       {/* Results header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
         <p className="text-gray-600 text-sm sm:text-base text-center sm:text-left">
-          {getTranslation('searchResults', pageLanguage).replace('{count}', results.length.toString()).replace('{query}', query)}
+          {totalCount} {getTranslation('resultsFor', pageLanguage)} &ldquo;{query}&rdquo; &middot;{' '}
+          {getLanguageName(language)} &middot; {getModeName(mode)}
         </p>
+        {totalCount > PAGE_SIZE && (
+          <p className="text-gray-400 text-xs text-center sm:text-right">
+            {firstResult}–{lastResult} / {totalCount}
+          </p>
+        )}
       </div>
 
       {/* Results list */}
@@ -120,7 +108,7 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
         {results.map((result) => (
           <div
             key={result.id}
-            onClick={() => onSelectResult(result.id)}
+            onClick={() => navigate(`/entry/${result.id}`)}
             className="p-4 sm:p-6 bg-white border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-md transition-all cursor-pointer"
           >
             <div className="space-y-3">
@@ -136,11 +124,10 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
                     {result.domain}
                   </span>
                   <span className="px-2.5 sm:px-3 py-1 bg-blue-100 text-blue-700 text-xs sm:text-sm rounded-md font-medium whitespace-nowrap">
-                    {result.level}
+                    {result.cefr_level}
                   </span>
                 </div>
               </div>
-              
               <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                 {result.definition}
               </p>
@@ -150,30 +137,43 @@ export function SearchResults({ query, language, mode, onSelectResult }: SearchR
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-2 sm:gap-4 pt-8">
-        <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-        
-        <div className="flex gap-1 sm:gap-2">
-          {[1, 2, 3, 4, 5].map((page) => (
-            <button
-              key={page}
-              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-sm sm:text-base transition-colors ${
-                page === 1
-                  ? 'bg-gray-900 text-white'
-                  : 'border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {page}
-            </button>
-          ))}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 sm:gap-4 pt-8">
+          <button
+            onClick={() => goToPage(page - 1)}
+            disabled={page <= 1}
+            className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+
+          <div className="flex gap-1 sm:gap-2">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => goToPage(p)}
+                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-sm sm:text-base transition-colors ${
+                  p === page
+                    ? 'bg-gray-900 text-white'
+                    : 'border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => goToPage(page + 1)}
+            disabled={page >= totalPages}
+            className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Next page"
+          >
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
         </div>
-        
-        <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
-          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
-      </div>
+      )}
     </div>
   );
 }

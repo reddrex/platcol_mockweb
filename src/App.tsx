@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Header, Language } from './components/Header';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/HomePage';
 import { SearchResults } from './components/SearchResults';
@@ -16,97 +17,50 @@ import { FAQ } from './components/FAQ';
 import { Contact } from './components/Contact';
 import { PageLanguageProvider } from './contexts/PageLanguageContext';
 
-type SearchMode = 'semantic' | 'lemma' | 'literal';
-type Page = 'home' | 'results' | 'entry' | 'privacy' | 'terms' | 'cookies' | 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq' | 'contact';
-
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchLanguage, setSearchLanguage] = useState<Language>('en');
-  const [searchMode, setSearchMode] = useState<SearchMode>('lemma');
+  const location = useLocation();
 
-  const handleSearch = (query: string, language: Language, mode: SearchMode) => {
-    setSearchQuery(query);
-    setSearchLanguage(language);
-    setSearchMode(mode);
-    setCurrentPage('results');
-  };
-
-  const handleSelectResult = (collocationId: string) => {
-    setCurrentPage('entry');
-  };
-
-  const handleLogoClick = () => {
-    setCurrentPage('home');
-  };
-
-  // Handle navigation from footer links
-  const handleNavigate = (page: Page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const isHome = location.pathname === '/';
+  const showHeader = !isHome;
 
   return (
     <PageLanguageProvider>
       <div className="min-h-screen bg-white flex flex-col">
-        {/* Header - Visible only on results and entry pages */}
-        {currentPage !== 'home' && (
-          <Header 
-            onMenuToggle={() => setSidebarOpen(true)} 
-            selectedLanguage={selectedLanguage}
-            onLanguageChange={setSelectedLanguage}
-            onLogoClick={handleLogoClick}
-            showSearchBar={currentPage === 'results' || currentPage === 'entry'}
-          />
+        {showHeader && (
+          <Header onMenuToggle={() => setSidebarOpen(true)} />
         )}
 
-        {/* Main Content */}
         <main className="flex-1">
-          {currentPage === 'home' && (
-            <HomePage 
-              onSearch={handleSearch}
-              onMenuToggle={() => setSidebarOpen(true)}
-            />
-          )}
-          
-          {currentPage === 'results' && (
-            <div className="container mx-auto px-4 py-12">
-              <SearchResults
-                query={searchQuery}
-                language={searchLanguage}
-                mode={searchMode}
-                onSelectResult={handleSelectResult}
-              />
-            </div>
-          )}
-          
-          {currentPage === 'entry' && (
-            <div className="container mx-auto px-4 py-12">
-              <DictionaryEntry />
-            </div>
-          )}
-
-          {currentPage === 'privacy' && <PrivacyPolicy />}
-          {currentPage === 'terms' && <TermsOfService />}
-          {currentPage === 'cookies' && <CookiePolicy />}
-          {currentPage === 'about' && <AboutProject />}
-          {currentPage === 'publications' && <Publications />}
-          {currentPage === 'related-platforms' && <RelatedPlatforms />}
-          {currentPage === 'user-guide' && <UserGuide />}
-          {currentPage === 'faq' && <FAQ />}
-          {currentPage === 'contact' && <Contact />}
+          <Routes>
+            <Route path="/" element={<HomePage onMenuToggle={() => setSidebarOpen(true)} />} />
+            <Route path="/search" element={
+              <div className="container mx-auto px-4 py-12">
+                <SearchResults />
+              </div>
+            } />
+            <Route path="/entry/:id" element={
+              <div className="container mx-auto px-4 py-12">
+                <DictionaryEntry />
+              </div>
+            } />
+            <Route path="/about" element={<AboutProject />} />
+            <Route path="/publications" element={<Publications />} />
+            <Route path="/related-platforms" element={<RelatedPlatforms />} />
+            <Route path="/user-guide" element={<UserGuide />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/cookies" element={<CookiePolicy />} />
+          </Routes>
         </main>
 
-        {/* Footer - Always visible on all pages */}
-        <Footer onNavigate={handleNavigate} />
+        <Footer />
 
-        {/* Sidebar */}
-        <Sidebar 
-          isOpen={sidebarOpen} 
+        <Sidebar
+          isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          onNavigate={handleNavigate}
         />
       </div>
     </PageLanguageProvider>

@@ -1,24 +1,23 @@
 import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { usePageLanguage } from '../contexts/PageLanguageContext';
 import { getTranslation } from '../utils/translations';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigate?: (page: 'about' | 'publications' | 'related-platforms' | 'user-guide' | 'faq' | 'contact' | 'privacy' | 'terms' | 'cookies') => void;
 }
 
-export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
+export function Sidebar({ isOpen, onClose }: Readonly<SidebarProps>) {
   const { pageLanguage } = usePageLanguage();
-  
-  const handleAboutClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (onNavigate) {
-      onNavigate('about');
-      onClose();
-    }
+  const navigate = useNavigate();
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    onClose();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
+
   return (
     <>
       {/* Overlay */}
@@ -57,29 +56,19 @@ export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
                 </h3>
                 <div className="space-y-1">
                   <button
-                    onClick={handleAboutClick}
+                    onClick={() => handleNavigate('/about')}
                     className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('aboutTheProject', pageLanguage)}
                   </button>
                   <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('publications');
-                        onClose();
-                      }
-                    }}
+                    onClick={() => handleNavigate('/publications')}
                     className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('publications', pageLanguage)}
                   </button>
                   <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('related-platforms');
-                        onClose();
-                      }
-                    }}
+                    onClick={() => handleNavigate('/related-platforms')}
                     className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('relatedPlatforms', pageLanguage)}
@@ -94,34 +83,19 @@ export function Sidebar({ isOpen, onClose, onNavigate }: SidebarProps) {
                 </h3>
                 <div className="space-y-1">
                   <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('user-guide');
-                        onClose();
-                      }
-                    }}
+                    onClick={() => handleNavigate('/user-guide')}
                     className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('userGuide', pageLanguage)}
                   </button>
                   <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('faq');
-                        onClose();
-                      }
-                    }}
+                    onClick={() => handleNavigate('/faq')}
                     className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('faq', pageLanguage)}
                   </button>
                   <button
-                    onClick={() => {
-                      if (onNavigate) {
-                        onNavigate('contact');
-                        onClose();
-                      }
-                    }}
+                    onClick={() => handleNavigate('/contact')}
                     className="w-full text-left block px-4 py-2.5 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     {getTranslation('contactFeedback', pageLanguage)}

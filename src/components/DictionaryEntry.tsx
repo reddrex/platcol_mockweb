@@ -1,9 +1,31 @@
 import { useState } from 'react';
-import { Share2, Check } from 'lucide-react';
+import { Share2, Check, ArrowLeft, Loader2 } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useCollocation } from '../hooks/useCollocation';
+import type { CollocationDetail, Example, TranslationLink, RelatedCollocation, UsageNote } from '../types/collocation';
 
 type Tab = 'definition' | 'examples' | 'translations' | 'related' | 'usage-notes';
 
+const languageFlags: Record<string, string> = {
+  en: '🇬🇧',
+  es: '🇪🇸',
+  pt: '🇵🇹',
+  fr: '🇫🇷',
+  zh: '🇨🇳',
+};
+
+const languageNames: Record<string, string> = {
+  en: 'English',
+  es: 'Spanish',
+  pt: 'Portuguese',
+  fr: 'French',
+  zh: 'Mandarin Chinese',
+};
+
 export function DictionaryEntry() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { collocation, loading, error } = useCollocation(id);
   const [activeTab, setActiveTab] = useState<Tab>('definition');
   const [shareSuccess, setShareSuccess] = useState(false);
 
@@ -17,52 +39,84 @@ export function DictionaryEntry() {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const title = 'make progress - PLATCOL';
+    const title = collocation ? `${collocation.collocation} - PLATCOL` : 'PLATCOL';
     const text = 'Check out this collocation entry on PLATCOL';
 
-    // Try to use Web Share API if available (mobile devices)
     if (navigator.share) {
       try {
-        await navigator.share({
-          title,
-          text,
-          url,
-        });
+        await navigator.share({ title, text, url });
         return;
-      } catch (error) {
-        // User cancelled or share failed, fall through to clipboard
-        if ((error as Error).name !== 'AbortError') {
-          console.error('Share failed:', error);
-        }
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') console.error('Share failed:', err);
       }
     }
 
-    // Fallback: copy to clipboard
     try {
       await navigator.clipboard.writeText(url);
       setShareSuccess(true);
       setTimeout(() => setShareSuccess(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
+    } catch (err) {
+      console.error('Failed to copy:', err);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4 text-gray-500">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error || !collocation) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-4 text-center px-4">
+        <p className="text-gray-700 font-medium">Entry not found.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-blue-700 hover:underline text-sm flex items-center gap-1"
+        >
+          <ArrowLeft className="w-4 h-4" /> Go back
+        </button>
+      </div>
+    );
+  }
+
   return (
     <article className="max-w-3xl mx-auto space-y-6 px-4 sm:px-6">
-      {/* Main Entry Header - Static, doesn't change with tabs */}
+      {/* Back button + Share */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to results
+        </button>
+        <button
+          onClick={handleShare}
+          className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg hover:border-gray-300 transition-all"
+          aria-label="Share this entry"
+        >
+          {shareSuccess ? <Check className="w-4 h-4 text-green-600" /> : <Share2 className="w-4 h-4" />}
+          {shareSuccess ? 'Copied!' : 'Share'}
+        </button>
+      </div>
+
+      {/* Main Entry Header */}
       <header className="space-y-4 pb-6 border-b border-gray-200">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 text-center">make progress</h1>
-        
-        {/* Tags */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl text-gray-900 text-center">
+          {collocation.collocation}
+        </h1>
         <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
           <span className="px-2.5 sm:px-3 py-1 bg-gray-100 text-gray-700 text-xs sm:text-sm rounded-md">
-            verb + noun
+            {collocation.structure}
           </span>
           <span className="px-2.5 sm:px-3 py-1 bg-green-100 text-green-800 text-xs sm:text-sm rounded-md font-medium">
-            Education & Development
+            {collocation.domain}
           </span>
           <span className="px-2.5 sm:px-3 py-1 bg-blue-100 text-blue-700 text-xs sm:text-sm rounded-md font-medium">
-            B1
+            {collocation.cefr_level}
           </span>
         </div>
       </header>
@@ -89,57 +143,40 @@ export function DictionaryEntry() {
         </div>
       </nav>
 
-      {/* Tab Content - Only this section changes */}
+      {/* Tab Content */}
       <div className="pt-4">
         <div className="min-h-[400px] sm:min-h-[500px]">
-          {activeTab === 'definition' && <DefinitionTab />}
-          {activeTab === 'examples' && <ExamplesTab />}
-          {activeTab === 'translations' && <TranslationsTab />}
-          {activeTab === 'related' && <RelatedTab />}
-          {activeTab === 'usage-notes' && <UsageNotesTab />}
+          {activeTab === 'definition' && <DefinitionTab definition={collocation.definition} />}
+          {activeTab === 'examples' && <ExamplesTab examples={collocation.examples} collocation={collocation.collocation} />}
+          {activeTab === 'translations' && <TranslationsTab translations={collocation.translations} />}
+          {activeTab === 'related' && <RelatedTab related={collocation.related} />}
+          {activeTab === 'usage-notes' && <UsageNotesTab notes={collocation.usage_notes} />}
         </div>
       </div>
     </article>
   );
 }
 
-function DefinitionTab() {
+function DefinitionTab({ definition }: Readonly<{ definition: string }>) {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
-      <p className="text-lg text-gray-700 leading-relaxed text-center">
-        To move forward or advance in the development, completion, or improvement of something; 
-        to achieve gradual advancement toward a goal or objective.
-      </p>
+      <p className="text-lg text-gray-700 leading-relaxed text-center">{definition}</p>
     </div>
   );
 }
 
-function ExamplesTab() {
-  const examples = [
-    "The research team has made significant progress in understanding the disease mechanism.",
-    "We need to make more progress on this project before the deadline.",
-    "She's making good progress in learning Spanish after just three months.",
-    "Despite the challenges, the construction workers made steady progress throughout the winter.",
-    "The patient is making excellent progress in their recovery.",
-    "The negotiations have made little progress over the past week.",
-    "I'm pleased to report that we've made considerable progress on the budget proposal.",
-    "The students are making rapid progress with their reading comprehension skills.",
-    "After months of effort, they finally made substantial progress toward their goal.",
-    "The company has made remarkable progress in reducing its carbon footprint.",
-  ];
-
+function ExamplesTab({ examples, collocation }: Readonly<{ examples: Example[]; collocation: string }>) {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       {examples.map((example, index) => (
         <div key={index} className="pb-6 border-b border-gray-100 last:border-0">
           <p className="text-gray-800 leading-relaxed text-justify">
             <span className="text-gray-400 font-medium">{index + 1}. </span>
-            {example.split(/(\bmade? (?:significant|more|good|steady|excellent|little|considerable|rapid|substantial|remarkable) progress\b|\bmaking (?:good|excellent|rapid) progress\b)/gi).map((part, i) => {
-              if (part.match(/\bmade? (?:significant|more|good|steady|excellent|little|considerable|rapid|substantial|remarkable) progress\b|\bmaking (?:good|excellent|rapid) progress\b/i)) {
-                return <strong key={i} className="font-semibold text-gray-900">{part}</strong>;
-              }
-              return part;
-            })}
+            {example.sentence.split(new RegExp(`(${collocation})`, 'i')).map((part, i) =>
+              part.toLowerCase() === collocation.toLowerCase()
+                ? <strong key={i} className="font-semibold text-gray-900">{part}</strong>
+                : part
+            )}
           </p>
         </div>
       ))}
@@ -147,126 +184,90 @@ function ExamplesTab() {
   );
 }
 
-function TranslationsTab() {
-  // Mock data structure matching database schema
-  // In production: this will come from collocation.translations column
-  // Format: array of {language: string, translation: string} objects
-  const translations = [
-    { language: 'es', translation: 'hacer progresos, avanzar' },
-    { language: 'pt', translation: 'fazer progressos, progredir' },
-    { language: 'fr', translation: 'faire des progrès, progresser' },
-    { language: 'zh', translation: '取得进步 (qǔdé jìnbù), 进展 (jìnzhǎn)' },
-  ];
-
-  const languageNames: { [key: string]: string } = {
-    'en': 'English',
-    'es': 'Spanish',
-    'pt': 'Portuguese',
-    'fr': 'French',
-    'zh': 'Mandarin Chinese',
-  };
+function TranslationsTab({ translations }: Readonly<{ translations: TranslationLink[] }>) {
+  if (translations.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        No translations available yet.
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
-      {translations.map((item, index) => (
-        <div key={index} className="pb-6 border-b border-gray-100 last:border-0 text-center">
-          <div className="font-medium text-gray-500 mb-2">
-            {languageNames[item.language] || item.language}
+    <div className="space-y-4 max-w-2xl mx-auto">
+      {translations.map((item) => (
+        <Link
+          key={item.id}
+          to={`/entry/${item.id}`}
+          className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all group"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{languageFlags[item.language] ?? '🌐'}</span>
+            <div>
+              <div className="text-xs text-gray-500 mb-0.5">{languageNames[item.language] ?? item.language}</div>
+              <div className="text-gray-900 font-medium group-hover:text-blue-900 transition-colors">
+                {item.collocation}
+              </div>
+            </div>
           </div>
-          <div className="text-gray-800 leading-relaxed">
-            {item.translation}
-          </div>
-        </div>
+          <ArrowLeft className="w-4 h-4 text-gray-400 rotate-180 group-hover:text-blue-600 transition-colors" />
+        </Link>
       ))}
     </div>
   );
 }
 
-function RelatedTab() {
-  const relatedCollocations = [
-    {
-      collocation: 'make headway',
-      structure: 'verb + noun',
-      definition: 'To make progress, especially when dealing with something difficult. Similar meaning but often implies overcoming obstacles.',
-    },
-    {
-      collocation: 'make strides',
-      structure: 'verb + noun',
-      definition: 'To make significant progress or improvements. Emphasizes notable or rapid advancement.',
-    },
-    {
-      collocation: 'make advances',
-      structure: 'verb + noun',
-      definition: 'To make progress, particularly in scientific, technical, or professional contexts.',
-    },
-    {
-      collocation: 'move forward',
-      structure: 'verb + adverb',
-      definition: 'To advance or proceed with something. More general and can be used in various contexts.',
-    },
-    {
-      collocation: 'gain ground',
-      structure: 'verb + noun',
-      definition: 'To make progress, especially in a competitive situation or when recovering from a setback.',
-    },
-    {
-      collocation: 'come along',
-      structure: 'verb + particle',
-      definition: 'Informal expression meaning to make progress or develop. Often used in questions: "How is your project coming along?"',
-    },
-  ];
+function RelatedTab({ related }: Readonly<{ related: RelatedCollocation[] }>) {
+  if (related.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        No related collocations available yet.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
-      {relatedCollocations.map((item, index) => (
-        <div key={index} className="space-y-2 pb-6 border-b border-gray-100 last:border-0 text-center">
+      {related.map((item) => (
+        <Link
+          key={item.id}
+          to={`/entry/${item.id}`}
+          className="block space-y-2 pb-6 border-b border-gray-100 last:border-0 text-center hover:bg-gray-50 rounded-lg p-3 transition-colors"
+        >
           <div className="flex items-center justify-center gap-3">
-            <div className="text-gray-900 font-medium text-lg">{item.collocation}</div>
-            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
-              {item.structure}
-            </span>
+            <div className="text-gray-900 font-medium text-lg hover:text-blue-900 transition-colors">
+              {item.collocation}
+            </div>
+            {item.structure && (
+              <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
+                {item.structure}
+              </span>
+            )}
           </div>
-          <p className="text-gray-600 leading-relaxed">
-            {item.definition}
-          </p>
-        </div>
+          {item.definition && (
+            <p className="text-gray-600 leading-relaxed text-sm">{item.definition}</p>
+          )}
+        </Link>
       ))}
     </div>
   );
 }
 
-function UsageNotesTab() {
-  const notes = [
-    {
-      title: 'Common Modifiers',
-      content: 'This collocation frequently appears with adjectives indicating the degree or type of progress: "significant progress," "steady progress," "rapid progress," "considerable progress," "little progress," or "slow progress."',
-    },
-    {
-      title: 'Register & Context',
-      content: 'Appropriate for both formal and informal contexts. Commonly used in academic writing, professional reports, educational settings, and everyday conversation.',
-    },
-    {
-      title: 'Grammatical Patterns',
-      content: 'Typically used in the present continuous (making progress) to describe ongoing advancement, or present perfect (have/has made progress) to describe completed advancement up to the present moment.',
-    },
-    {
-      title: 'Common Collocates',
-      content: 'Often appears with prepositions "in," "on," "with," and "toward/towards." Examples: "make progress in learning," "make progress on a project," "make progress with negotiations," "make progress toward a goal."',
-    },
-    {
-      title: 'Learner Tip',
-      content: 'This is a fixed collocation. While "do progress" might seem logical, it is incorrect. Always use "make" as the verb. Similarly, the noun form is always singular: "make progress," not "make progresses."',
-    },
-  ];
+function UsageNotesTab({ notes }: Readonly<{ notes: UsageNote[] }>) {
+  if (notes.length === 0) {
+    return (
+      <div className="text-center py-12 text-gray-500">
+        No usage notes available yet.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-2xl mx-auto">
       {notes.map((note, index) => (
         <div key={index} className="space-y-3">
           <h3 className="text-lg font-semibold text-gray-900">{note.title}</h3>
-          <p className="text-gray-700 leading-relaxed">
-            {note.content}
-          </p>
+          <p className="text-gray-700 leading-relaxed">{note.content}</p>
         </div>
       ))}
     </div>

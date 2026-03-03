@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Search, ChevronDown, ChevronUp, Menu } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import logoImage from 'figma:asset/41cab91203e471dcdec6be6d1be14dbcb44a92aa.png';
 import { usePageLanguage } from '../contexts/PageLanguageContext';
 import { getTranslation } from '../utils/translations';
+import { useAutocomplete } from '../hooks/useAutocomplete';
 
 type Language = 'en' | 'es' | 'pt' | 'fr' | 'zh';
 type SearchMode = 'semantic' | 'lemma' | 'literal';
@@ -15,104 +17,12 @@ interface AdvancedFilters {
 }
 
 interface HomePageProps {
-  onSearch: (query: string, language: Language, mode: SearchMode) => void;
   onMenuToggle?: () => void;
 }
 
-// Mock collocation data for autocomplete
-const collocationsByLanguage: Record<Language, string[]> = {
-  en: [
-    'make a decision',
-    'make progress',
-    'make an effort',
-    'take action',
-    'take responsibility',
-    'take into account',
-    'strong argument',
-    'strong possibility',
-    'strong evidence',
-    'heavy rain',
-    'heavy traffic',
-    'heavy workload',
-    'pay attention',
-    'pay a visit',
-    'deep understanding',
-    'deep concern',
-    'break the ice',
-    'break the news',
-    'catch a cold',
-    'catch attention',
-  ],
-  es: [
-    'tomar una decisión',
-    'tomar medidas',
-    'hacer un esfuerzo',
-    'prestar atención',
-    'dar una oportunidad',
-    'dar las gracias',
-    'hacer caso',
-    'hacer frente',
-    'llevar a cabo',
-    'llevar la contraria',
-    'poner en marcha',
-    'poner de manifiesto',
-    'tener en cuenta',
-    'tener lugar',
-    'echar de menos',
-    'echar un vistazo',
-  ],
-  pt: [
-    'tomar uma decisão',
-    'tomar medidas',
-    'fazer um esforço',
-    'prestar atenção',
-    'dar uma oportunidade',
-    'dar as boas-vindas',
-    'fazer questão',
-    'fazer face',
-    'levar a cabo',
-    'levar em conta',
-    'pôr em prática',
-    'pôr de parte',
-    'ter em conta',
-    'ter lugar',
-  ],
-  fr: [
-    'prendre une décision',
-    'prendre des mesures',
-    'faire un effort',
-    'faire attention',
-    'donner une chance',
-    'donner raison',
-    'mettre en œuvre',
-    'mettre en place',
-    'tenir compte',
-    'tenir parole',
-    'rendre compte',
-    'rendre service',
-    'avoir lieu',
-    'avoir raison',
-  ],
-  zh: [
-    '做决定',
-    '做出努力',
-    '采取措施',
-    '采取行动',
-    '注意',
-    '付出代价',
-    '取得进展',
-    '取得成功',
-    '达成协议',
-    '达到目的',
-    '提出问题',
-    '提高水平',
-    '解决问题',
-    '实现目标',
-  ],
-};
-
-export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
+export function HomePage({ onMenuToggle }: Readonly<HomePageProps>) {
   const { pageLanguage } = usePageLanguage();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
   const [selectedMode, setSelectedMode] = useState<SearchMode>('lemma');
@@ -126,12 +36,7 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
     domain: '',
   });
 
-  // Filter suggestions based on search query and selected language
-  const suggestions = searchQuery.trim().length > 0
-    ? collocationsByLanguage[selectedLanguage].filter((collocation) =>
-        collocation.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 8) // Limit to 8 suggestions
-    : [];
+  const suggestions = useAutocomplete(searchQuery, selectedLanguage);
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -220,9 +125,18 @@ export function HomePage({ onSearch, onMenuToggle }: HomePageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      onSearch(searchQuery, selectedLanguage, selectedMode);
-    }
+    if (!searchQuery.trim()) return;
+    const params = new URLSearchParams({
+      q: searchQuery.trim(),
+      lang: selectedLanguage,
+      mode: selectedMode,
+      page: '1',
+    });
+    if (filters.baseWord) params.set('base', filters.baseWord);
+    if (filters.collocateWord) params.set('collocate', filters.collocateWord);
+    if (filters.structure) params.set('structure', filters.structure);
+    if (filters.domain) params.set('domain', filters.domain);
+    navigate(`/search?${params.toString()}`);
   };
 
   return (

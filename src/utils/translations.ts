@@ -630,6 +630,36 @@ export const translations = {
     fr: 'Contact et commentaires',
     zh: '联系与反馈',
   },
+
+  // Search states
+  searching: {
+    en: 'Searching...',
+    es: 'Buscando...',
+    pt: 'A pesquisar...',
+    fr: 'Recherche en cours...',
+    zh: '搜索中...',
+  },
+  errorLoading: {
+    en: 'Something went wrong. Please try again.',
+    es: 'Algo salió mal. Por favor, inténtalo de nuevo.',
+    pt: 'Algo correu mal. Por favor, tente novamente.',
+    fr: 'Une erreur est survenue. Veuillez réessayer.',
+    zh: '出现错误，请重试。',
+  },
+  noResultsFor: {
+    en: 'No results found for',
+    es: 'No se encontraron resultados para',
+    pt: 'Não foram encontrados resultados para',
+    fr: 'Aucun résultat trouvé pour',
+    zh: '没有找到相关结果：',
+  },
+  tryDifferentSearch: {
+    en: 'Try a different word or change the search mode.',
+    es: 'Intenta con otra palabra o cambia el modo de búsqueda.',
+    pt: 'Tente outra palavra ou mude o modo de pesquisa.',
+    fr: 'Essayez un autre mot ou changez le mode de recherche.',
+    zh: '请尝试其他词汇或更换搜索模式。',
+  },
 };
 
 export function getTranslation(key: keyof typeof translations, lang: PageLanguage): string {
