@@ -1,6 +1,6 @@
-# PLATCOL — Prototipo web del diccionario de colocaciones
+# Prototipo web de diccionario de colocaciones
 
-Prototipo funcional de PLATCOL (*Platform for Collocations*), un diccionario multilingüe de colocaciones con búsqueda real contra base de datos. Desarrollado para pruebas de usuario.
+Prototipo de un diccionario multilingüe de colocaciones con búsqueda real contra base de datos. Desarrollado para pruebas de usuario.
 
 - **Frontend:** Vercel (React + Vite)
 - **Base de datos:** Supabase (PostgreSQL)
@@ -8,22 +8,7 @@ Prototipo funcional de PLATCOL (*Platform for Collocations*), un diccionario mul
 
 ---
 
-## Índice
-
-1. [Requisitos previos](#1-requisitos-previos)
-2. [Configuración local](#2-configuración-local)
-3. [Estructura del proyecto](#3-estructura-del-proyecto)
-4. [Arquitectura y decisiones de diseño](#4-arquitectura-y-decisiones-de-diseño)
-5. [Base de datos](#5-base-de-datos)
-6. [Añadir o modificar datos](#6-añadir-o-modificar-datos)
-7. [Internacionalización (i18n)](#7-internacionalización-i18n)
-8. [Despliegue en Vercel](#8-despliegue-en-vercel)
-9. [Flujos principales](#9-flujos-principales)
-10. [Mantenimiento](#10-mantenimiento)
-
----
-
-## 1. Requisitos previos
+## 1. Requisitos previos para desarrollo local
 
 - Node.js 18+
 - Una cuenta gratuita en [supabase.com](https://supabase.com)
@@ -66,7 +51,7 @@ platcol_mockweb/
 │   └── 02_seed_data.sql       # Datos de ejemplo (~35 colocaciones)
 │
 ├── src/
-│   ├── main.tsx               # Punto de entrada — envuelve App en BrowserRouter
+│   ├── main.tsx               # Punto de entrada: envuelve App en BrowserRouter
 │   ├── App.tsx                # Rutas (react-router-dom), gestiona sidebar
 │   │
 │   ├── lib/
@@ -86,12 +71,12 @@ platcol_mockweb/
 │   │   ├── Sidebar.tsx        # Menú lateral deslizante
 │   │   ├── HomePage.tsx       # Página principal con buscador
 │   │   ├── SearchResults.tsx  # Lista de resultados paginada
-│   │   ├── DictionaryEntry.tsx# Entrada de diccionario con 5 pestañas
-│   │   ├── AboutProject.tsx   # Información sobre el proyecto PLATCOL
-│   │   ├── Publications.tsx   # Publicaciones académicas
-│   │   ├── RelatedPlatforms.tsx
+│   │   ├── DictionaryEntry.tsx  # Entrada de diccionario con 5 pestañas
+│   │   ├── AboutProject.tsx   # Información sobre el proyecto
+│   │   ├── Publications.tsx   # Publicaciones académicas relacionadas con el proyecto
+│   │   ├── RelatedPlatforms.tsx  # Otras plataformas relacionadas con el proyecto
 │   │   ├── UserGuide.tsx      # Guía de uso
-│   │   ├── FAQ.tsx
+│   │   ├── FAQ.tsx            # Preguntas comunes en relación con el diccionario o proyecto
 │   │   ├── Contact.tsx        # Formulario de contacto
 │   │   ├── PrivacyPolicy.tsx
 │   │   ├── TermsOfService.tsx
@@ -117,7 +102,7 @@ platcol_mockweb/
 
 ### Routing (react-router-dom)
 
-Todas las páginas tienen URL propia. El botón atrás del navegador funciona correctamente.
+Todas las páginas tienen URL propia para poder compartirlas. 
 
 | URL | Componente |
 |-----|-----------|
